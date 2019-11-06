@@ -1,0 +1,13 @@
+subprojects {
+    apply plugin: 'java'
+
+    group 'ru.cft.focusstart'
+    version '1.0'
+
+    sourceCompatibility = 1.11
+    targetCompatibility = 1.11
+
+    repositories {
+        mavenCentral()
+    }
+}
