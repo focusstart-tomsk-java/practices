@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%date{dd.MM.yyyy HH:mm:ss.SSS} %-5level [%thread, %logger{0}] %message%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <file>testFile.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%date{dd.MM.yyyy HH:mm:ss.SSS} %-5level [%thread, %logger{0}] %message%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ru.cft.focusstart.samples.foo" level="off"/>
+    <logger name="ru.cft.focusstart.samples.foo.Foo" level="error"/>
+    <logger name="ru.cft.focusstart.samples.foo.buzz" level="warn"/>
+    <logger name="ru.cft.focusstart.samples.foo.buzz.BuzzFoo" level="debug" additivity="false">
+        <appender-ref ref="file"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
