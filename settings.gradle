@@ -1,2 +1,4 @@
 include 'unit-tests'
 include 'logging'
+include 'inheritance'
+
