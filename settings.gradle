@@ -2,3 +2,5 @@ include 'unit-tests'
 include 'logging'
 include 'inheritance'
 include 'multithreading'
+include 'swing'
+
