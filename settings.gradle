@@ -3,4 +3,6 @@ include 'logging'
 include 'inheritance'
 include 'multithreading'
 include 'swing'
-
+include 'serialization:dto'
+include 'serialization:jackson'
+include 'serialization:builtin'
