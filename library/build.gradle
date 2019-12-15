@@ -1,0 +1,10 @@
+apply plugin: 'war'
+
+dependencies {
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+}

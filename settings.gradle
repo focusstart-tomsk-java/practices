@@ -8,3 +8,5 @@ include 'serialization:jackson'
 include 'serialization:builtin'
 include 'chat:client'
 include 'chat:server'
+include 'library'
+
