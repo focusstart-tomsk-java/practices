@@ -66,7 +66,7 @@ public class DefaultBookService implements BookService {
 
         Book book = bookRepository.getById(id)
                 .map(existing -> update(existing, bookDto))
-                .orElse(add(id, bookDto));
+                .orElseGet(() -> add(id, bookDto));
 
         return bookMapper.toDto(book);
     }
@@ -76,6 +76,7 @@ public class DefaultBookService implements BookService {
         checkNotNull("id", id);
 
         Book book = getBook(id);
+        book.getAuthor().getBooks().remove(book);
 
         bookRepository.delete(book);
     }
