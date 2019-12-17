@@ -75,7 +75,7 @@ public class DefaultAuthorService implements AuthorService {
 
         Author author = authorRepository.getById(id)
                 .map(existing -> update(existing, authorDto))
-                .orElse(add(id, authorDto));
+                .orElseGet(() -> add(id, authorDto));
 
         return authorMapper.toDto(author);
     }

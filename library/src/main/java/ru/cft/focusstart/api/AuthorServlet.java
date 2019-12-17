@@ -31,12 +31,12 @@ public class AuthorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(AUTHORS_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(AUTHORS_PATTERN)) {
                 get(req, resp);
-            } else if (uri.matches(AUTHOR_PATTERN)) {
+            } else if (path.matches(AUTHOR_PATTERN)) {
                 getById(req, resp);
-            } else if (uri.matches(AUTHOR_BOOKS_PATTERN)) {
+            } else if (path.matches(AUTHOR_BOOKS_PATTERN)) {
                 getBooks(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -49,8 +49,8 @@ public class AuthorServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(AUTHORS_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(AUTHORS_PATTERN)) {
                 create(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -63,8 +63,8 @@ public class AuthorServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(AUTHOR_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(AUTHOR_PATTERN)) {
                 merge(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -82,7 +82,7 @@ public class AuthorServlet extends HttpServlet {
     }
 
     private void getById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), AUTHOR_PATTERN, "id");
+        Long id = getPathPart(getPath(req), AUTHOR_PATTERN, "id");
 
         AuthorDto response = authorService.getById(id);
         writeResp(resp, response);
@@ -96,18 +96,22 @@ public class AuthorServlet extends HttpServlet {
     }
 
     private void getBooks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), AUTHOR_BOOKS_PATTERN, "id");
+        Long id = getPathPart(getPath(req), AUTHOR_BOOKS_PATTERN, "id");
 
         List<BookDto> response = authorService.getBooks(id);
         writeResp(resp, response);
     }
 
     private void merge(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), AUTHOR_PATTERN, "id");
+        Long id = getPathPart(getPath(req), AUTHOR_PATTERN, "id");
         AuthorDto request = mapper.readValue(req.getInputStream(), AuthorDto.class);
 
         AuthorDto response = authorService.merge(id, request);
         writeResp(resp, response);
+    }
+
+    private String getPath(HttpServletRequest req) {
+        return req.getRequestURI().substring(req.getContextPath().length());
     }
 
     private void writeResp(HttpServletResponse resp, Object response) throws IOException {

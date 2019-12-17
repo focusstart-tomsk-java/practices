@@ -29,10 +29,10 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(BOOKS_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(BOOKS_PATTERN)) {
                 get(req, resp);
-            } else if (uri.matches(BOOK_PATTERN)) {
+            } else if (path.matches(BOOK_PATTERN)) {
                 getById(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -45,8 +45,8 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(BOOKS_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(BOOKS_PATTERN)) {
                 create(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -59,8 +59,8 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(BOOK_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(BOOK_PATTERN)) {
                 merge(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -73,8 +73,8 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String uri = req.getServletPath();
-            if (uri.matches(BOOK_PATTERN)) {
+            String path = getPath(req);
+            if (path.matches(BOOK_PATTERN)) {
                 delete(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -92,7 +92,7 @@ public class BookServlet extends HttpServlet {
     }
 
     private void getById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), BOOK_PATTERN, "id");
+        Long id = getPathPart(getPath(req), BOOK_PATTERN, "id");
 
         BookDto response = bookService.getById(id);
         writeResp(resp, response);
@@ -107,7 +107,7 @@ public class BookServlet extends HttpServlet {
     }
 
     private void merge(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), BOOK_PATTERN, "id");
+        Long id = getPathPart(getPath(req), BOOK_PATTERN, "id");
         BookDto request = mapper.readValue(req.getInputStream(), BookDto.class);
 
         BookDto response = bookService.merge(id, request);
@@ -115,9 +115,13 @@ public class BookServlet extends HttpServlet {
     }
 
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = getPathPart(req.getServletPath(), BOOK_PATTERN, "id");
+        Long id = getPathPart(getPath(req), BOOK_PATTERN, "id");
 
         bookService.delete(id);
+    }
+
+    private String getPath(HttpServletRequest req) {
+        return req.getRequestURI().substring(req.getContextPath().length());
     }
 
     private void writeResp(HttpServletResponse resp, Object response) throws IOException {

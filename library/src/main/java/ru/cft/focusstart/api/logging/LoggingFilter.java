@@ -22,7 +22,7 @@ public class LoggingFilter extends HttpFilter {
             HttpServletResponse res,
             FilterChain chain
     ) throws IOException, ServletException {
-        log.info("Request received: {} {}", req.getMethod(), req.getServletPath());
+        log.info("Request received: {} {}", req.getMethod(), req.getRequestURI());
         chain.doFilter(req, res);
         log.info("Response sent: {}", res.getStatus());
     }

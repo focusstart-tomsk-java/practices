@@ -10,8 +10,8 @@ final class PathParser {
     private PathParser() {
     }
 
-    static Long getPathPart(String uri, String pattern, String parameterName) {
-        Matcher matcher = Pattern.compile(pattern).matcher(uri);
+    static Long getPathPart(String path, String pattern, String parameterName) {
+        Matcher matcher = Pattern.compile(pattern).matcher(path);
         if (!matcher.find()) {
             throw new ObjectNotFoundException("Object not found");
         }
