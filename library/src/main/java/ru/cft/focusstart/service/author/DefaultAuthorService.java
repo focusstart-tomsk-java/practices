@@ -4,13 +4,14 @@ import ru.cft.focusstart.api.dto.AuthorDto;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Author;
 import ru.cft.focusstart.exception.ObjectNotFoundException;
-import ru.cft.focusstart.repository.author.AuthorRepository;
-import ru.cft.focusstart.repository.author.InMemoryAuthorRepository;
 import ru.cft.focusstart.mapper.AuthorMapper;
 import ru.cft.focusstart.mapper.BookMapper;
+import ru.cft.focusstart.repository.author.AuthorRepository;
+import ru.cft.focusstart.repository.author.JdbcAuthorRepository;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.cft.focusstart.service.validation.Validator.*;
@@ -19,7 +20,7 @@ public class DefaultAuthorService implements AuthorService {
 
     private static final DefaultAuthorService INSTANCE = new DefaultAuthorService();
 
-    private final AuthorRepository authorRepository = InMemoryAuthorRepository.getInstance();
+    private final AuthorRepository authorRepository = JdbcAuthorRepository.getInstance();
 
     private final AuthorMapper authorMapper = AuthorMapper.getInstance();
 
@@ -62,7 +63,8 @@ public class DefaultAuthorService implements AuthorService {
     public List<BookDto> getBooks(Long id) {
         checkNotNull("id", id);
 
-        return getAuthor(id).getBooks()
+        return Optional.ofNullable(getAuthor(id).getBooks())
+                .orElse(Collections.emptyList())
                 .stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
@@ -91,7 +93,6 @@ public class DefaultAuthorService implements AuthorService {
         author.setId(id);
         author.setName(authorDto.getName());
         author.setDescription(authorDto.getDescription());
-        author.setBooks(new ArrayList<>());
 
         authorRepository.add(author);
 

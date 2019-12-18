@@ -6,10 +6,10 @@ import ru.cft.focusstart.entity.Book;
 import ru.cft.focusstart.exception.InvalidParametersException;
 import ru.cft.focusstart.exception.ObjectNotFoundException;
 import ru.cft.focusstart.repository.author.AuthorRepository;
-import ru.cft.focusstart.repository.author.InMemoryAuthorRepository;
+import ru.cft.focusstart.repository.author.JdbcAuthorRepository;
 import ru.cft.focusstart.repository.book.BookRepository;
-import ru.cft.focusstart.repository.book.InMemoryBookRepository;
 import ru.cft.focusstart.mapper.BookMapper;
+import ru.cft.focusstart.repository.book.JdbcBookRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +20,9 @@ public class DefaultBookService implements BookService {
 
     private static final DefaultBookService INSTANCE = new DefaultBookService();
 
-    private final AuthorRepository authorRepository = InMemoryAuthorRepository.getInstance();
+    private final AuthorRepository authorRepository = JdbcAuthorRepository.getInstance();
 
-    private final BookRepository bookRepository = InMemoryBookRepository.getInstance();
+    private final BookRepository bookRepository = JdbcBookRepository.getInstance();
 
     private final BookMapper bookMapper = BookMapper.getInstance();
 
@@ -76,7 +76,6 @@ public class DefaultBookService implements BookService {
         checkNotNull("id", id);
 
         Book book = getBook(id);
-        book.getAuthor().getBooks().remove(book);
 
         bookRepository.delete(book);
     }
@@ -99,8 +98,6 @@ public class DefaultBookService implements BookService {
         book.setIsbn(bookDto.getIsbn());
         book.setAuthor(author);
 
-        author.getBooks().add(book);
-
         bookRepository.add(book);
 
         return book;
@@ -122,11 +119,7 @@ public class DefaultBookService implements BookService {
         book.setIsbn(bookDto.getIsbn());
         if (!bookDto.getAuthorId().equals(book.getAuthor().getId())) {
             Author newAuthor = getAuthor(bookDto.getAuthorId());
-            Author oldAuthor = book.getAuthor();
-
-            oldAuthor.getBooks().remove(book);
             book.setAuthor(newAuthor);
-            newAuthor.getBooks().add(book);
         }
 
         bookRepository.update(book);
