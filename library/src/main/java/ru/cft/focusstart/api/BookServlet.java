@@ -1,10 +1,12 @@
 package ru.cft.focusstart.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.ApplicationContext;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.service.book.BookService;
-import ru.cft.focusstart.service.book.DefaultBookService;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +24,20 @@ public class BookServlet extends HttpServlet {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final BookService bookService = DefaultBookService.getInstance();
+    private BookService bookService;
 
-    private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
+    private ExceptionHandler exceptionHandler;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        ApplicationContext applicationContext =
+                (ApplicationContext) config.getServletContext().getAttribute("applicationContext");
+
+        this.bookService = applicationContext.getBean(BookService.class);
+        this.exceptionHandler = applicationContext.getBean(ExceptionHandler.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

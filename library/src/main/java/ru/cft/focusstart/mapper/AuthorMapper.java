@@ -1,18 +1,11 @@
 package ru.cft.focusstart.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.cft.focusstart.api.dto.AuthorDto;
 import ru.cft.focusstart.entity.Author;
 
+@Component
 public class AuthorMapper {
-
-    private static final AuthorMapper INSTANCE = new AuthorMapper();
-
-    private AuthorMapper() {
-    }
-
-    public static AuthorMapper getInstance() {
-        return INSTANCE;
-    }
 
     public AuthorDto toDto(Author author) {
         return AuthorDto.builder()

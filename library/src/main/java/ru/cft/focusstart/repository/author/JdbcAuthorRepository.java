@@ -1,9 +1,9 @@
 package ru.cft.focusstart.repository.author;
 
+import org.springframework.stereotype.Repository;
 import ru.cft.focusstart.entity.Author;
 import ru.cft.focusstart.entity.Book;
 import ru.cft.focusstart.repository.DataAccessException;
-import ru.cft.focusstart.repository.DataSourceProvider;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -12,6 +12,7 @@ import java.util.*;
 import static ru.cft.focusstart.repository.reader.AuthorReader.readAuthor;
 import static ru.cft.focusstart.repository.reader.BookReader.readBook;
 
+@Repository
 public class JdbcAuthorRepository implements AuthorRepository {
 
     private static final String ADD_QUERY =
@@ -42,16 +43,10 @@ public class JdbcAuthorRepository implements AuthorRepository {
             "set name = ?, description = ? " +
             "where id = ?";
 
-    private static final JdbcAuthorRepository INSTANCE = new JdbcAuthorRepository();
-
     private final DataSource dataSource;
 
-    private JdbcAuthorRepository() {
-        this.dataSource = DataSourceProvider.getDataSource();
-    }
-
-    public static AuthorRepository getInstance() {
-        return INSTANCE;
+    public JdbcAuthorRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override

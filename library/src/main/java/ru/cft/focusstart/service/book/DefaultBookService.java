@@ -1,36 +1,37 @@
 package ru.cft.focusstart.service.book;
 
+import org.springframework.stereotype.Service;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Author;
 import ru.cft.focusstart.entity.Book;
 import ru.cft.focusstart.exception.InvalidParametersException;
 import ru.cft.focusstart.exception.ObjectNotFoundException;
-import ru.cft.focusstart.repository.author.AuthorRepository;
-import ru.cft.focusstart.repository.author.JdbcAuthorRepository;
-import ru.cft.focusstart.repository.book.BookRepository;
 import ru.cft.focusstart.mapper.BookMapper;
-import ru.cft.focusstart.repository.book.JdbcBookRepository;
+import ru.cft.focusstart.repository.author.AuthorRepository;
+import ru.cft.focusstart.repository.book.BookRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.cft.focusstart.service.validation.Validator.*;
 
+@Service
 public class DefaultBookService implements BookService {
 
-    private static final DefaultBookService INSTANCE = new DefaultBookService();
+    private final AuthorRepository authorRepository;
 
-    private final AuthorRepository authorRepository = JdbcAuthorRepository.getInstance();
+    private final BookRepository bookRepository;
 
-    private final BookRepository bookRepository = JdbcBookRepository.getInstance();
+    private final BookMapper bookMapper;
 
-    private final BookMapper bookMapper = BookMapper.getInstance();
-
-    private DefaultBookService() {
-    }
-
-    public static BookService getInstance() {
-        return INSTANCE;
+    public DefaultBookService(
+            AuthorRepository authorRepository,
+            BookRepository bookRepository,
+            BookMapper bookMapper
+    ) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
     }
 
     @Override

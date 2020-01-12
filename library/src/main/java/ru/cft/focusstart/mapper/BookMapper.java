@@ -1,18 +1,11 @@
 package ru.cft.focusstart.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Book;
 
+@Component
 public class BookMapper {
-
-    private static final BookMapper INSTANCE = new BookMapper();
-
-    private BookMapper() {
-    }
-
-    public static BookMapper getInstance() {
-        return INSTANCE;
-    }
 
     public BookDto toDto(Book book) {
         return BookDto.builder()

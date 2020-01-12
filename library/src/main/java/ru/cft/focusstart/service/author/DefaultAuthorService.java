@@ -1,5 +1,6 @@
 package ru.cft.focusstart.service.author;
 
+import org.springframework.stereotype.Service;
 import ru.cft.focusstart.api.dto.AuthorDto;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Author;
@@ -7,7 +8,6 @@ import ru.cft.focusstart.exception.ObjectNotFoundException;
 import ru.cft.focusstart.mapper.AuthorMapper;
 import ru.cft.focusstart.mapper.BookMapper;
 import ru.cft.focusstart.repository.author.AuthorRepository;
-import ru.cft.focusstart.repository.author.JdbcAuthorRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,21 +16,23 @@ import java.util.stream.Collectors;
 
 import static ru.cft.focusstart.service.validation.Validator.*;
 
+@Service
 public class DefaultAuthorService implements AuthorService {
 
-    private static final DefaultAuthorService INSTANCE = new DefaultAuthorService();
+    private final AuthorRepository authorRepository;
 
-    private final AuthorRepository authorRepository = JdbcAuthorRepository.getInstance();
+    private final AuthorMapper authorMapper;
 
-    private final AuthorMapper authorMapper = AuthorMapper.getInstance();
+    private final BookMapper bookMapper;
 
-    private final BookMapper bookMapper = BookMapper.getInstance();
-
-    private DefaultAuthorService() {
-    }
-
-    public static AuthorService getInstance() {
-        return INSTANCE;
+    public DefaultAuthorService(
+            AuthorRepository authorRepository,
+            AuthorMapper authorMapper,
+            BookMapper bookMapper
+    ) {
+        this.authorRepository = authorRepository;
+        this.authorMapper = authorMapper;
+        this.bookMapper = bookMapper;
     }
 
     @Override

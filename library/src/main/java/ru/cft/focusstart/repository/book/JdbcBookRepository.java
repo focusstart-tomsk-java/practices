@@ -1,9 +1,9 @@
 package ru.cft.focusstart.repository.book;
 
+import org.springframework.stereotype.Repository;
 import ru.cft.focusstart.entity.Author;
 import ru.cft.focusstart.entity.Book;
 import ru.cft.focusstart.repository.DataAccessException;
-import ru.cft.focusstart.repository.DataSourceProvider;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -15,6 +15,7 @@ import java.util.Optional;
 import static ru.cft.focusstart.repository.reader.AuthorReader.readAuthor;
 import static ru.cft.focusstart.repository.reader.BookReader.readBook;
 
+@Repository
 public class JdbcBookRepository implements BookRepository {
 
     private static final String ADD_QUERY =
@@ -49,16 +50,10 @@ public class JdbcBookRepository implements BookRepository {
     private static final String DELETE_QUERY =
             "delete from book where id = ?";
 
-    private static final JdbcBookRepository INSTANCE = new JdbcBookRepository();
+    private DataSource dataSource;
 
-    private final DataSource dataSource;
-
-    private JdbcBookRepository() {
-        this.dataSource = DataSourceProvider.getDataSource();
-    }
-
-    public static JdbcBookRepository getInstance() {
-        return INSTANCE;
+    public JdbcBookRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
