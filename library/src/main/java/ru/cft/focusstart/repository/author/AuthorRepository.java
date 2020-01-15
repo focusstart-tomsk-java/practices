@@ -12,6 +12,4 @@ public interface AuthorRepository {
     Optional<Author> getById(Long id);
 
     List<Author> get(String name);
-
-    void update(Author author);
 }

@@ -1,6 +1,8 @@
 package ru.cft.focusstart.service.book;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Author;
 import ru.cft.focusstart.entity.Book;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 import static ru.cft.focusstart.service.validation.Validator.*;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultBookService implements BookService {
 
     private final AuthorRepository authorRepository;
@@ -24,17 +27,8 @@ public class DefaultBookService implements BookService {
 
     private final BookMapper bookMapper;
 
-    public DefaultBookService(
-            AuthorRepository authorRepository,
-            BookRepository bookRepository,
-            BookMapper bookMapper
-    ) {
-        this.authorRepository = authorRepository;
-        this.bookRepository = bookRepository;
-        this.bookMapper = bookMapper;
-    }
-
     @Override
+    @Transactional
     public BookDto create(BookDto bookDto) {
         validate(bookDto);
 
@@ -44,6 +38,7 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookDto getById(Long id) {
         checkNotNull("id", id);
 
@@ -53,6 +48,7 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookDto> get(String name, String authorName) {
         return bookRepository.get(name, authorName)
                 .stream()
@@ -61,6 +57,7 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
+    @Transactional
     public BookDto merge(Long id, BookDto bookDto) {
         checkNotNull("id", id);
         validate(bookDto);
@@ -73,6 +70,7 @@ public class DefaultBookService implements BookService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         checkNotNull("id", id);
 
@@ -122,8 +120,6 @@ public class DefaultBookService implements BookService {
             Author newAuthor = getAuthor(bookDto.getAuthorId());
             book.setAuthor(newAuthor);
         }
-
-        bookRepository.update(book);
 
         return book;
     }

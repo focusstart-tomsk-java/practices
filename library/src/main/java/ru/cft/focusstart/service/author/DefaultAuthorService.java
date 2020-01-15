@@ -1,6 +1,8 @@
 package ru.cft.focusstart.service.author;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cft.focusstart.api.dto.AuthorDto;
 import ru.cft.focusstart.api.dto.BookDto;
 import ru.cft.focusstart.entity.Author;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 import static ru.cft.focusstart.service.validation.Validator.*;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultAuthorService implements AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -25,17 +28,8 @@ public class DefaultAuthorService implements AuthorService {
 
     private final BookMapper bookMapper;
 
-    public DefaultAuthorService(
-            AuthorRepository authorRepository,
-            AuthorMapper authorMapper,
-            BookMapper bookMapper
-    ) {
-        this.authorRepository = authorRepository;
-        this.authorMapper = authorMapper;
-        this.bookMapper = bookMapper;
-    }
-
     @Override
+    @Transactional
     public AuthorDto create(AuthorDto authorDto) {
         validate(authorDto);
 
@@ -45,6 +39,7 @@ public class DefaultAuthorService implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthorDto getById(Long id) {
         checkNotNull("id", id);
 
@@ -54,6 +49,7 @@ public class DefaultAuthorService implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AuthorDto> get(String name) {
         return authorRepository.get(name)
                 .stream()
@@ -62,6 +58,7 @@ public class DefaultAuthorService implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookDto> getBooks(Long id) {
         checkNotNull("id", id);
 
@@ -73,6 +70,7 @@ public class DefaultAuthorService implements AuthorService {
     }
 
     @Override
+    @Transactional
     public AuthorDto merge(Long id, AuthorDto authorDto) {
         checkNotNull("id", id);
         validate(authorDto);
@@ -109,8 +107,6 @@ public class DefaultAuthorService implements AuthorService {
     private Author update(Author author, AuthorDto authorDto) {
         author.setName(authorDto.getName());
         author.setDescription(authorDto.getDescription());
-
-        authorRepository.update(author);
 
         return author;
     }

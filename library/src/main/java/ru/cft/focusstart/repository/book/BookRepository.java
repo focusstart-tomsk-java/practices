@@ -13,7 +13,5 @@ public interface BookRepository {
 
     List<Book> get(String name, String authorName);
 
-    void update(Book book);
-
     void delete(Book book);
 }
