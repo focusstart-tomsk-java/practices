@@ -5,6 +5,7 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.2.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.2.2.RELEASE'
     implementation group: 'org.springframework', name: 'spring-orm', version: '5.2.2.RELEASE'
 
     implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
