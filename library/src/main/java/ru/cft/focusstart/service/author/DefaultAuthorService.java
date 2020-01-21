@@ -51,7 +51,7 @@ public class DefaultAuthorService implements AuthorService {
     @Override
     @Transactional(readOnly = true)
     public List<AuthorDto> get(String name) {
-        return authorRepository.get(name)
+        return authorRepository.findByNameContainingIgnoreCase(name == null ? "" : name)
                 .stream()
                 .map(authorMapper::toDto)
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class DefaultAuthorService implements AuthorService {
         checkNotNull("id", id);
         validate(authorDto);
 
-        Author author = authorRepository.getById(id)
+        Author author = authorRepository.findById(id)
                 .map(existing -> update(existing, authorDto))
                 .orElseGet(() -> add(id, authorDto));
 
@@ -94,13 +94,11 @@ public class DefaultAuthorService implements AuthorService {
         author.setName(authorDto.getName());
         author.setDescription(authorDto.getDescription());
 
-        authorRepository.add(author);
-
-        return author;
+        return authorRepository.save(author);
     }
 
     private Author getAuthor(Long id) {
-        return authorRepository.getById(id)
+        return authorRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Author with id %s not found", id)));
     }
 

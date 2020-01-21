@@ -1,15 +1,13 @@
 package ru.cft.focusstart.repository.author;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.cft.focusstart.entity.Author;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface AuthorRepository {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    void add(Author author);
-
-    Optional<Author> getById(Long id);
-
-    List<Author> get(String name);
+    List<Author> findByNameContainingIgnoreCase(String name);
 }

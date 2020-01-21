@@ -50,7 +50,7 @@ public class DefaultBookService implements BookService {
     @Override
     @Transactional(readOnly = true)
     public List<BookDto> get(String name, String authorName) {
-        return bookRepository.get(name, authorName)
+        return bookRepository.find(name == null ? "" : name, authorName == null ? "" : authorName)
                 .stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
@@ -62,7 +62,7 @@ public class DefaultBookService implements BookService {
         checkNotNull("id", id);
         validate(bookDto);
 
-        Book book = bookRepository.getById(id)
+        Book book = bookRepository.findById(id)
                 .map(existing -> update(existing, bookDto))
                 .orElseGet(() -> add(id, bookDto));
 
@@ -97,18 +97,16 @@ public class DefaultBookService implements BookService {
         book.setIsbn(bookDto.getIsbn());
         book.setAuthor(author);
 
-        bookRepository.add(book);
-
-        return book;
+        return bookRepository.save(book);
     }
 
     private Author getAuthor(Long id) {
-        return authorRepository.getById(id)
+        return authorRepository.findById(id)
                 .orElseThrow(() -> new InvalidParametersException(String.format("Author with id %s not found", id)));
     }
 
     private Book getBook(Long id) {
-        return bookRepository.getById(id)
+        return bookRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Book with id %s not found", id)));
     }
 
