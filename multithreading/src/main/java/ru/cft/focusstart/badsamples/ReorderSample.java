@@ -2,7 +2,7 @@ package ru.cft.focusstart.badsamples;
 
 public class ReorderSample {
     private int a = 2;
-    private volatile boolean flg = false;
+    private boolean flg = false;
 
     private void method1() {
         a = 1;
